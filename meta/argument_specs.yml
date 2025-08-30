@@ -25,7 +25,7 @@ argument_specs:
       borg_venv_path:
         type: str
         required: false
-        description:  Path to store the venv for borg(backup) and borgmatic.
+        description: Path to store the venv for borg(backup) and borgmatic.
       borg_install_method:
         type: str
         required: false
@@ -36,6 +36,7 @@ argument_specs:
           overwrite the borg_distro_packages variable to contain your distributions package names
           required to install borgmatic.
           Note that many distributions ship outdated versions of borgbackup and borgmatic; use at your own risk.
+          Set to none to disable installation management.
       borgmatic_config_name:
         type: str
         required: false
@@ -114,35 +115,41 @@ argument_specs:
       borgmatic_relocated_repo_access_is_ok:
         type: bool
         description: Bypass Borg error about a repository that has been moved.
+      borgmatic_unknown_unencrypted_repo_access_is_ok:
+        type: bool
+        description: Bypass Borg error about a previously unknown unencrypted repository.
       borg_retention_policy:
-        keep_secondly:
-          type: int
-          required: false
-          description: Number of secondly archives to keep.
-        keep_minutely:
-          type: int
-          required: false
-          description: Number of minutely archives to keep.
-        keep_hourly:
-          type: int
-          required: false
-          description: Number of hourly archives to keep.
-        keep_daily:
-          type: int
-          required: false
-          description: Number of daily archives to keep.
-        keep_weekly:
-          type: int
-          required: false
-          description: Number of weekly archives to keep.
-        keep_monthly:
-          type: int
-          required: false
-          description: Number of monthly archives to keep.
-        keep_yearly:
-          type: int
-          required: false
-          description: Number of yearly archives to keep.
+        type: dict
+        description: Define the pruning policy
+        options:
+          keep_secondly:
+            type: int
+            required: false
+            description: Number of secondly archives to keep.
+          keep_minutely:
+            type: int
+            required: false
+            description: Number of minutely archives to keep.
+          keep_hourly:
+            type: int
+            required: false
+            description: Number of hourly archives to keep.
+          keep_daily:
+            type: int
+            required: false
+            description: Number of daily archives to keep.
+          keep_weekly:
+            type: int
+            required: false
+            description: Number of weekly archives to keep.
+          keep_monthly:
+            type: int
+            required: false
+            description: Number of monthly archives to keep.
+          keep_yearly:
+            type: int
+            required: false
+            description: Number of yearly archives to keep.
       borgmatic_checks:
         type: list
         required: false
@@ -180,6 +187,10 @@ argument_specs:
         type: str
         required: false
         description: Minute when regular create and prune cron/systemd-timer job will run.
+      borgmatic_timer_flags:
+        type: str
+        required: false
+        description: Flags to pass to borgmatic cron/systemd-timer job, like "--log-file /path/to/file.log --log-file-verbosity 2"
       borgmatic_version:
         type: str
         required: false
@@ -192,3 +203,7 @@ argument_specs:
         type: str
         required: false
         description: Name of the SSH public and private key
+      borg_ssh_key_comment:
+        type: str
+        required: false
+        description: Comment added to the SSH public key.
