@@ -3,14 +3,15 @@
 # Managed by Ansible, please don't edit manually
 
 # Full config: https://torsion.org/borgmatic/docs/reference/config.yaml
+
 {% if borg_source_directories is not defined or borg_source_directories | length == 0 %}
 source_directories:
     - /etc/hostname # prevent empty backupconfig
 {% else %}
 source_directories:
-  {% for dir in borg_source_directories %}
+{% for dir in borg_source_directories %}
     - {{ dir }}
-  {% endfor %}
+{% endfor %}
 {% endif %}
 
 # Stay in same file system (do not cross mount points).
@@ -18,15 +19,15 @@ one_file_system: {{ borg_one_file_system }}
 repositories:
 {% if borg_repository is iterable and (borg_repository is not string and borg_repository is not mapping) %}
   {% for repo in borg_repository %}
-        - path: {{ repo }}
+    - path: {{ repo }}
   {% endfor %}
 {# Mapping with path and label key #}
 {% elif borg_repository is defined and borg_repository is mapping and "path" in borg_repository and "label" in borg_repository %}
     - path: {{ borg_repository.path }}
       label: {{ borg_repository.label }}
-{# String (legacy) #}
+{# String (legacy) #}  
 {% elif borg_repository is defined and borg_repository is string %}
-        - path: {{ borg_repository }}
+    - path: {{ borg_repository }}
 {% endif %}
 
 # Store atime into archive.
@@ -70,6 +71,7 @@ remote_path: {{ borg_remote_path }}
 # https://borgbackup.readthedocs.io/en/stable/usage.html#borg-create and
 # https://borgbackup.readthedocs.io/en/stable/usage/general.html#environment-variables for
 # details.
+
 {% if borg_encryption_passphrase %}
 encryption_passphrase: {{ borg_encryption_passphrase }}
 
@@ -116,16 +118,15 @@ archive_name_format: '{hostname}-{now:%Y-%m-%d-%H%M%S}'
 # Bypass Borg error about a repository that has been moved.
 relocated_repo_access_is_ok: {{ borgmatic_relocated_repo_access_is_ok }}
 
-    # Bypass Borg error about a previously unknown unencrypted repository.
-    unknown_unencrypted_repo_access_is_ok: {{ borgmatic_unknown_unencrypted_repo_access_is_ok }}
+# Bypass Borg error about a previously unknown unencrypted repository.
+unknown_unencrypted_repo_access_is_ok: {{ borgmatic_unknown_unencrypted_repo_access_is_ok }}
 
 # Retention policy for how many backups to keep in each category. See
 # https://borgbackup.readthedocs.org/en/stable/usage.html#borg-prune for details.
 # At least one of the "keep" options is required for pruning to work.
-retention:
 {% if borg_retention_policy.keep_within is defined %}
-    # Keep all archives within this time interval.
-    keep_within: {{ borg_retention_policy.keep_within }}
+# Keep all archives within this time interval.
+keep_within: {{ borg_retention_policy.keep_within }}
 {% endif %}
 
 {% if borg_retention_policy.keep_secondly is defined %}
@@ -178,6 +179,7 @@ checks:
 {% for checks in borgmatic_checks %}
     - {{ checks }}
 {% endfor %}
+
 # Restrict the number of checked archives to the last n. Applies only to the "archives" check.
 check_last: {{ borgmatic_check_last }}
 
@@ -187,5 +189,5 @@ check_last: {{ borgmatic_check_last }}
 # prevent potential shell injection or privilege escalation.
 {% for hook in borgmatic_hooks %}
 {{ hook }}:
-    {{ borgmatic_hooks[hook] | to_nice_yaml(indent=2) | trim | indent(4) }}
+    {{ borgmatic_hooks[hook] | to_nice_yaml(indent=4) | trim|  indent(4) }}
 {% endfor %}
