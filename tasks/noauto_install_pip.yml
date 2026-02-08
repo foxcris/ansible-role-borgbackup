@@ -1,6 +1,11 @@
 ---
 - name: Install Borg and Borgmatic via pip
   block:
+    - name: Delete borgmatic venv directory to ensure clean setup
+      ansible.builtin.file:
+        state: absent
+        path: "{{ borg_venv_path }}"
+
     - name: Ensure the crb repository is enabled for RedHat (needed for xxhash)
       community.general.dnf_config_manager:
         name: crb
